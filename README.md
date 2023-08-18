@@ -7,3 +7,15 @@ This Discord bot will be used to track "karma" of users, similar to Reddit. Upvo
 ## How to run
 
 *TODO*
+
+## Commands
+
+*TODO*
+
+## Config
+
+*TODO*
+
+## License
+
+See [LICENSE](https://github.com/bqrichards/karmabot/blob/main/LICENSE)
