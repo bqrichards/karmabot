@@ -1,7 +1,7 @@
 import logging
 import os
-import discord
 from typing import Optional
+import discord
 from dotenv import load_dotenv
 
 from config import ConfigProvider, KarmaConfig
@@ -45,7 +45,6 @@ class KarmaClient(discord.Client):
 		self.upvote_emojis = [discord.PartialEmoji(name=emoji) for emoji in config.upvote_emojis]
 		self.downvote_emojis = [discord.PartialEmoji(name=emoji) for emoji in config.downvote_emojis]
 
-
 	async def get_message_sender_id(self, payload: discord.RawReactionActionEvent) -> Optional[int]:
 		"""Get the sender of a message that was the subject of a RawReactionActionEvent"""
 		if payload.guild_id is None:
@@ -65,14 +64,11 @@ class KarmaClient(discord.Client):
 
 		return sender_id
 
-
 	def reaction_is_upvote(self, emoji: discord.PartialEmoji) -> bool:
 		return emoji in self.upvote_emojis
 
-
 	def reaction_is_downvote(self, emoji: discord.PartialEmoji) -> bool:
 		return emoji in self.downvote_emojis
-
 
 	async def on_raw_reaction_add(self, payload: discord.RawReactionActionEvent):
 		if not payload.guild_id or not payload.user_id:
@@ -90,7 +86,6 @@ class KarmaClient(discord.Client):
 			self.store.upvote_user(payload.guild_id, payload.user_id)
 		elif self.reaction_is_downvote(payload.emoji):
 			self.store.downvote_user(payload.guild_id, payload.user_id)
-
 
 	async def on_raw_reaction_remove(self, payload: discord.RawReactionActionEvent):
 		if not payload.guild_id or not payload.user_id:

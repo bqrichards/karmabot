@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 
+
 @dataclass
 class KarmaConfig:
     """Config for KarmaBot"""
@@ -12,9 +13,10 @@ class KarmaConfig:
 
 
 class ConfigProvider:
+    """Interface for provider of KarmaConfig"""
+
     def get_config(self) -> KarmaConfig:
         """Get config"""
-        pass
 
 
 def config_from_dict(obj: dict) -> KarmaConfig:

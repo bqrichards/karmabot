@@ -12,4 +12,3 @@ class KarmaStore:
     def get_karma_of_user(self, guild_id: int, user_id: int) -> int:
         """Get the karma of a user in a guild"""
         pass
-
