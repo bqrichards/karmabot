@@ -9,8 +9,15 @@ class KarmaMemoryStore(KarmaStore):
     """karma_map[guild_id][user_id] -> karma amount"""
 
     def __init__(self) -> None:
-        self.karma_map = dict()
         self.logger = logging.getLogger(__class__.__name__)
+    
+    async def open(self):
+        self.karma_map = dict()
+        self.logger.info('Store opened')
+    
+    async def close(self):
+        del self.karma_map
+        self.logger.info('Store closed')
 
     def create_if_doesnt_exist(self, guild_id: int, user_id: int):
         """Initialize a user's karma in a guild to 0 (if it doesn't already exist)"""

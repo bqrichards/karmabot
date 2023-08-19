@@ -1,9 +1,10 @@
 import logging
 import os
-from typing import Optional
+from typing import Any, Coroutine, Optional
 import discord
 from discord.ext import commands
 from dotenv import load_dotenv
+import asyncio
 
 from config import ConfigProvider, KarmaConfig
 from config_file import ConfigJsonReader
@@ -74,6 +75,12 @@ class KarmaBot(commands.Bot):
 	def reaction_is_downvote(self, emoji: discord.PartialEmoji) -> bool:
 		"""Whether this emoji is an downvote"""
 		return emoji in self.downvote_emojis
+	
+	async def close(self) -> None:
+		self.logger.info('Closing karma store')
+		await self.store.close()
+		self.logger.info('Logging out')
+		await super().close()
 
 
 intents = discord.Intents.default()
@@ -89,6 +96,8 @@ bot = KarmaBot(intents=intents, config=config, store=store)
 
 @bot.event
 async def on_ready():
+	bot.logger.info('Opening karma store')
+	await bot.store.open()
 	bot.logger.info(f'Logged in as {bot.user}')
 	bot.logger.info('------')
 
@@ -132,4 +141,6 @@ async def on_raw_reaction_remove(payload: discord.RawReactionActionEvent):
 async def karma(ctx: commands.Context, member_name: Optional[str]=None):
 	await karma_command(ctx, bot.store, member_name)
 
-bot.run(TOKEN)
+
+if __name__ == '__main__':
+	bot.run(TOKEN)
