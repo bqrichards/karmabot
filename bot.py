@@ -5,6 +5,8 @@ from dotenv import load_dotenv
 
 from config import ConfigProvider, KarmaConfig
 from config_file import ConfigJsonReader
+from memory_store import KarmaMemoryStore
+from store import KarmaStore
 
 
 load_dotenv()
@@ -17,13 +19,16 @@ if not TOKEN:
 
 class KarmaClient(discord.Client):
 	config: KarmaConfig
+	store: KarmaStore
+
 	upvote_emojis: list[discord.PartialEmoji]
 	downvote_emojis: list[discord.PartialEmoji]
 
-	def __init__(self, config: KarmaConfig, *args, **kwargs):
+	def __init__(self, config: KarmaConfig, store: KarmaStore, *args, **kwargs):
 		super().__init__(*args, **kwargs)
 		self.config = config
-		print('Creating bot with config: ' + str(self.config))
+		self.store = store
+		print('Creating bot with config: ' + str(self.config) + ", store: " + str(self.store))
 
 		self.upvote_emojis = [discord.PartialEmoji(name=emoji) for emoji in config.upvote_emojis]
 		self.downvote_emojis = [discord.PartialEmoji(name=emoji) for emoji in config.downvote_emojis]
@@ -74,5 +79,7 @@ intents = discord.Intents.default()
 config_provider: ConfigProvider = ConfigJsonReader(filepath='config.json')
 config = config_provider.get_config()
 
-client = KarmaClient(intents=intents, config=config)
+store: KarmaStore = KarmaMemoryStore()
+
+client = KarmaClient(intents=intents, config=config, store=store)
 client.run(TOKEN)
