@@ -20,7 +20,7 @@ class KarmaMemoryStore(KarmaStore):
         if not user_id in self.karma_map[guild_id]:
             self.karma_map[guild_id][user_id] = 0
 
-    def upvote_user(self, guild_id: int, user_id: int) -> int:
+    async def upvote_user(self, guild_id: int, user_id: int) -> int:
         self.create_if_doesnt_exist(guild_id, user_id)
 
         self.karma_map[guild_id][user_id] += 1
@@ -28,7 +28,7 @@ class KarmaMemoryStore(KarmaStore):
 
         return self.karma_map[guild_id][user_id]
 
-    def downvote_user(self, guild_id: int, user_id: int) -> int:
+    async def downvote_user(self, guild_id: int, user_id: int) -> int:
         self.create_if_doesnt_exist(guild_id, user_id)
 
         self.karma_map[guild_id][user_id] -= 1
@@ -36,7 +36,7 @@ class KarmaMemoryStore(KarmaStore):
 
         return self.karma_map[guild_id][user_id]
 
-    def get_karma_of_user(self, guild_id: int, user_id: int) -> int:
+    async def get_karma_of_user(self, guild_id: int, user_id: int) -> int:
         guild_map = self.karma_map.get(guild_id, dict())
         karma_amount = guild_map.get(user_id, 0)
 
