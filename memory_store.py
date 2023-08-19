@@ -1,3 +1,4 @@
+import logging
 from store import KarmaStore
 
 
@@ -7,6 +8,10 @@ class KarmaMemoryStore(KarmaStore):
     karma_map: dict[int, dict[int, int]]
     """karma_map[guild_id][user_id] -> karma amount"""
 
+    def __init__(self) -> None:
+        self.karma_map = dict()
+        self.logger = logging.getLogger(__class__.__name__)
+
     def create_if_doesnt_exist(self, guild_id: int, user_id: int):
         """Initialize a user's karma in a guild to 0 (if it doesn't already exist)"""
         if not guild_id in self.karma_map:
@@ -15,11 +20,11 @@ class KarmaMemoryStore(KarmaStore):
         if not user_id in self.karma_map[guild_id]:
             self.karma_map[guild_id][user_id] = 0
 
-
     def upvote_user(self, guild_id: int, user_id: int) -> int:
         self.create_if_doesnt_exist(guild_id, user_id)
 
         self.karma_map[guild_id][user_id] += 1
+        self.logger.debug(self.karma_map)
 
         return self.karma_map[guild_id][user_id]
     
@@ -27,6 +32,7 @@ class KarmaMemoryStore(KarmaStore):
         self.create_if_doesnt_exist(guild_id, user_id)
         
         self.karma_map[guild_id][user_id] -= 1
+        self.logger.debug(self.karma_map)
 
         return self.karma_map[guild_id][user_id]
     
