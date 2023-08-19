@@ -1,4 +1,14 @@
-# karmabot
+# karmabot <!-- omit in toc -->
+
+## Outline <!-- omit in toc -->
+
+- [Summary](#summary)
+- [How to run](#how-to-run)
+- [Commands](#commands)
+- [Config](#config)
+- [Environment](#environment)
+- [Roadmap](#roadmap)
+- [License](#license)
 
 ## Summary
 
@@ -10,27 +20,46 @@ First, install dependencies with Poetry.
 
 `poetry install`
 
-Then, run the main bot script with Poetry.
+Then, set the `KARMABOT_TOKEN` environment variable. See the [Environment](#environment) section for more info. `.env` should look like this:
+
+```
+KARMABOT_TOKEN=...
+```
+
+Finally, run the main bot script with Poetry.
 
 `poetry run python src/bot.py`
 
 ## Commands
 
-| key                     | description                                                            |
-|-------------------------|------------------------------------------------------------------------|
-| `?karma [user]`         | Replies with the karma of the user. If no user specified, uses sender. |
+| key             | description                                                            |
+| --------------- | ---------------------------------------------------------------------- |
+| `?karma [user]` | Replies with the karma of the user. If no user specified, uses sender. |
 
 ## Config
 
 Edit the configuration file located at `config.json`.
 
-### All config options
+| key             | description                                                        | type         | default            |
+| --------------- | ------------------------------------------------------------------ | ------------ | ------------------ |
+| upvote_emojis   | A list of emojis OR name of server emotes that represent upvotes   | list[string] | ["⬆️", "👆", "👍"] |
+| downvote_emojis | A list of emojis OR name of server emotes that represent downvotes | list[string] | ["⬇️", "👇", "👎"] |
+| command_prefix  | The command prefix for KarmaBot                                    | string       | ?                  |
 
-| key                      | description                                                       | type   | default |
-|--------------------------|-------------------------------------------------------------------|--------|---------|
-| upvote_reaction          | A list of emoji OR name of server emotes that represent upvotes   | list[string] | ["⬆️", "👆", "👍"]      |
-| downvote_reaction        | A list of emoji OR name of server emotes that represent downvotes | list[string] | ["⬇️", "👇", "👎"]      | 
-| command_prefix           | The command prefix for KarmaBot                                   | string | ?       | 
+## Environment
+
+Environment variables are loaded from a `.env` file.
+
+| key              | value             | required | default |
+| ---------------- | ----------------- | -------- | ------- |
+| `KARMABOT_TOKEN` | Discord bot token | Yes      | None    |
+| `LOG_LEVEL`      | Log level         | No       | INFO    |
+
+## Roadmap
+
+- [x] Karma command
+- [ ] Persistant karma store
+- [ ] Scan previous messages for karma
 
 ## License
 
