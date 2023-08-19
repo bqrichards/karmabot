@@ -6,7 +6,13 @@ This Discord bot will be used to track "karma" of users, similar to Reddit. Upvo
 
 ## How to run
 
-*TODO*
+First, install dependencies with Poetry.
+
+`poetry install`
+
+Then, run the main bot script with Poetry.
+
+`poetry run python src/bot.py`
 
 ## Commands
 
