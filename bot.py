@@ -3,6 +3,9 @@ import discord
 from typing import Optional
 from dotenv import load_dotenv
 
+from config import ConfigProvider, KarmaConfig
+from config_file import ConfigJsonReader
+
 
 load_dotenv()
 
@@ -13,14 +16,17 @@ if not TOKEN:
 
 
 class KarmaClient(discord.Client):
-	def __init__(self, *args, **kwargs):
+	config: KarmaConfig
+	upvote_emojis: list[discord.PartialEmoji]
+	downvote_emojis: list[discord.PartialEmoji]
+
+	def __init__(self, config: KarmaConfig, *args, **kwargs):
 		super().__init__(*args, **kwargs)
+		self.config = config
+		print('Creating bot with config: ' + str(self.config))
 
-		upvote_list = ['⬆️', '☝️', '👍']
-		downvote_list = [ '⬇️', '👇', '👎']
-
-		self.upvote_emojis = [discord.PartialEmoji(name=emoji) for emoji in upvote_list]
-		self.downvote_emojis = [discord.PartialEmoji(name=emoji) for emoji in downvote_list]
+		self.upvote_emojis = [discord.PartialEmoji(name=emoji) for emoji in config.upvote_emojis]
+		self.downvote_emojis = [discord.PartialEmoji(name=emoji) for emoji in config.downvote_emojis]
 
 
 	async def get_message_sender_id(self, payload: discord.RawReactionActionEvent) -> Optional[int]:
@@ -65,5 +71,8 @@ class KarmaClient(discord.Client):
 
 intents = discord.Intents.default()
 
-client = KarmaClient(intents=intents)
+config_provider: ConfigProvider = ConfigJsonReader(filepath='config.json')
+config = config_provider.get_config()
+
+client = KarmaClient(intents=intents, config=config)
 client.run(TOKEN)
