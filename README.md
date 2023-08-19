@@ -16,11 +16,21 @@ Then, run the main bot script with Poetry.
 
 ## Commands
 
-*TODO*
+| key                     | description                                                            |
+|-------------------------|------------------------------------------------------------------------|
+| `?karma [user]`         | Replies with the karma of the user. If no user specified, uses sender. |
 
 ## Config
 
-*TODO*
+Edit the configuration file located at `config.json`.
+
+### All config options
+
+| key                      | description                                                       | type   | default |
+|--------------------------|-------------------------------------------------------------------|--------|---------|
+| upvote_reaction          | A list of emoji OR name of server emotes that represent upvotes   | list[string] | ["⬆️", "👆", "👍"]      |
+| downvote_reaction        | A list of emoji OR name of server emotes that represent downvotes | list[string] | ["⬇️", "👇", "👎"]      | 
+| command_prefix           | The command prefix for KarmaBot                                   | string | ?       | 
 
 ## License
 
