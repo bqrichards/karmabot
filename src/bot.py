@@ -1,15 +1,15 @@
 import logging
 import os
-from typing import Any, Coroutine, Optional
+from typing import Optional
 import discord
 from discord.ext import commands
 from dotenv import load_dotenv
-import asyncio
 
 from config import ConfigProvider, KarmaConfig
 from config_file import ConfigJsonReader
-from memory_store import KarmaMemoryStore
+# from memory_store import KarmaMemoryStore
 from karma_command import karma_command
+from sqlite_store import KarmaSqliteStore
 from store import KarmaStore
 
 
@@ -90,7 +90,7 @@ intents.message_content = True # needed for on_message
 config_provider: ConfigProvider = ConfigJsonReader(filepath='config.json')
 config = config_provider.get_config()
 
-store: KarmaStore = KarmaMemoryStore()
+store: KarmaStore = KarmaSqliteStore(filepath='data/karma.db')
 
 bot = KarmaBot(intents=intents, config=config, store=store)
 
