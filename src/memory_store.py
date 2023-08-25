@@ -48,6 +48,13 @@ class KarmaMemoryStore(KarmaStore):
         karma_amount = guild_map.get(user_id, 0)
 
         return karma_amount
+    
+    async def get_top_users(self, guild_id: int, number_of_users: int) -> list[tuple[int, int]]:
+        top_users = self.karma_map.get(guild_id, dict())
+        top_users = sorted(top_users.items(), key=lambda item: item[1])
+        top_users = top_users[:number_of_users]
+
+        return top_users
 
     def __str__(self) -> str:
         return 'KarmaMemoryStore'

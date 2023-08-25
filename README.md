@@ -32,9 +32,10 @@ Finally, run the main bot script with Poetry.
 
 ## Commands
 
-| key             | description                                                            |
-| --------------- | ---------------------------------------------------------------------- |
-| `?karma [user]` | Replies with the karma of the user. If no user specified, uses sender. |
+| key                           | description                                                            |
+| ----------------------------- | ---------------------------------------------------------------------- |
+| `?karma [user]`               | Replies with the karma of the user. If no user specified, uses sender. |
+| `?leaderboard [member_count]` | Replies with the users that have the most karma in the guild.          |
 
 ## Config
 

@@ -9,6 +9,8 @@ from config import ConfigProvider, KarmaConfig
 from config_file import ConfigJsonReader
 # from memory_store import KarmaMemoryStore
 from karma_command import karma_command
+from leaderboard_command import leaderboard_command
+from memory_store import KarmaMemoryStore
 from sqlite_store import KarmaSqliteStore
 from store import KarmaStore
 
@@ -90,7 +92,8 @@ intents.message_content = True # needed for on_message
 config_provider: ConfigProvider = ConfigJsonReader(filepath='config.json')
 config = config_provider.get_config()
 
-store: KarmaStore = KarmaSqliteStore(filepath='data/karma.db')
+store: KarmaStore = KarmaMemoryStore()
+# store: KarmaStore = KarmaSqliteStore(filepath='data/karma.db')
 
 bot = KarmaBot(intents=intents, config=config, store=store)
 
@@ -138,8 +141,13 @@ async def on_raw_reaction_remove(payload: discord.RawReactionActionEvent):
 		await bot.store.upvote_user(payload.guild_id, payload.user_id)
 
 @bot.command()
-async def karma(ctx: commands.Context, member_name: Optional[str]=None):
+async def karma(ctx: commands.Context, member_name: Optional[str] = None):
 	await karma_command(ctx, bot.store, member_name)
+
+
+@bot.command()
+async def leaderboard(ctx: commands.Context, member_count = 10):
+	await leaderboard_command(ctx, bot.store, member_count)
 
 
 if __name__ == '__main__':
