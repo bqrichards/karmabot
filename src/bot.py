@@ -92,8 +92,8 @@ intents.message_content = True # needed for on_message
 config_provider: ConfigProvider = ConfigJsonReader(filepath='config.json')
 config = config_provider.get_config()
 
-store: KarmaStore = KarmaMemoryStore()
-# store: KarmaStore = KarmaSqliteStore(filepath='data/karma.db')
+# store: KarmaStore = KarmaMemoryStore()
+store: KarmaStore = KarmaSqliteStore(filepath='data/karma.db')
 
 bot = KarmaBot(intents=intents, config=config, store=store)
 
