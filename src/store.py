@@ -15,3 +15,6 @@ class KarmaStore:
     
     async def get_karma_of_user(self, guild_id: int, user_id: int) -> int:
         """Get the karma of a user in a guild"""
+
+    async def get_top_users(self, guild_id: int, number_of_users: int) -> list[tuple[int, int]]:
+        """Get the leaderboard of a guild"""

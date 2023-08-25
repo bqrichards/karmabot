@@ -67,6 +67,15 @@ class KarmaSqliteStore(KarmaStore):
             existing_karma = existing_karma[0]
 
         return existing_karma
+    
+    async def get_top_users(self, guild_id: int, number_of_users: int) -> list[tuple[int, int]]:
+        cur = self.connection.cursor()
+        cur.execute('SELECT user_id, karma FROM karma WHERE guild_id = ? ORDER BY karma DESC LIMIT ?', (guild_id, number_of_users))
+        top_users = cur.fetchall()
+        cur.close()
+
+        return top_users
+
 
     def __str__(self) -> str:
         return __class__.__name__
