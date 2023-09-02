@@ -1,5 +1,5 @@
 import logging
-from store import KarmaStore
+from bot.store import KarmaStore
 
 
 class KarmaSqliteStore(KarmaStore):

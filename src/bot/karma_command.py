@@ -1,7 +1,7 @@
 import logging
 from typing import Optional
 from discord.ext import commands
-from store import KarmaStore
+from bot.store import KarmaStore
 
 
 async def karma_command(ctx: commands.Context, store: KarmaStore, target_member: Optional[str]=None) -> None:
@@ -30,4 +30,4 @@ async def karma_command(ctx: commands.Context, store: KarmaStore, target_member:
     karma = await store.get_karma_of_user(guild_id, target_user_id)
     logger.debug(f'Fetched karma: {karma}')
 
-    await ctx.send(f'{karma}')
+    await ctx.reply(f'{karma}')
