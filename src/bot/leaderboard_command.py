@@ -2,7 +2,7 @@ import logging
 import discord
 from discord.ext import commands
 
-from store import KarmaStore
+from bot.store import KarmaStore
 
 def get_display_name(member: discord.Member | None) -> str:
     if member is None:

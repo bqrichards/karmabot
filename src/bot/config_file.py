@@ -1,6 +1,6 @@
 import json
 import logging
-from config import ConfigProvider, KarmaConfig, config_from_dict
+from bot.config import ConfigProvider, KarmaConfig, config_from_dict
 
 
 class ConfigJsonReader(ConfigProvider):
