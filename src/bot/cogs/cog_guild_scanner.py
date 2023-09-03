@@ -1,3 +1,5 @@
+import asyncio
+from dataclasses import dataclass
 import logging
 from typing import Any, Coroutine
 from discord import TextChannel
@@ -8,12 +10,21 @@ from bot.bot import KarmaBot
 from bot.bot import KarmaBotContext
 
 
+@dataclass
+class GuildScanningRecord:
+    total_channels: int
+    """The total number of text channels to scan"""
+
+    current_channel: int
+    """The current channel being scanned"""
+
+
 class KarmaBotGuildScannerCog(commands.Cog):
     def __init__(self, bot: KarmaBot):
         self.bot = bot
         self.logger = logging.getLogger(__class__.__name__)
         self.queue: janus.AsyncQueue[KarmaBotContext] = janus.Queue().async_q
-        self.scanning_guilds: dict[int, bool] = dict()
+        self.scanning_guilds: dict[int, GuildScanningRecord] = dict()
         self.scan_guilds.start()
     
     def cog_unload(self) -> Coroutine[Any, Any, None]:
@@ -33,8 +44,8 @@ class KarmaBotGuildScannerCog(commands.Cog):
         scanning = guild_id in self.scanning_guilds
 
         if scanning:
-            # TODO add progress
-            await ctx.send('This guild is already being scanned. Progress: 0/?')
+            scanning_record = self.scanning_guilds[guild_id]
+            await ctx.send(f'This guild is already being scanned. Progress: {scanning_record.current_channel}/{scanning_record.total_channels} channels')
             return
         
         # Begin scanning / add to queue
@@ -52,14 +63,20 @@ class KarmaBotGuildScannerCog(commands.Cog):
             else:
                 guild_id = ctx.guild.id
 
-                self.scanning_guilds[guild_id] = True
+                # Mark this guild as being scanned
+                self.scanning_guilds[guild_id] = GuildScanningRecord(total_channels=0, current_channel=0)
 
                 self.logger.debug(f'Begin scanning guild: {guild_id}')
 
                 # Scan all text channels for reactions
                 text_channels = [channel for channel in ctx.guild.channels if isinstance(channel, TextChannel)]
+                self.scanning_guilds[guild_id].total_channels = len(text_channels)
                 guild_karma: dict[int, int] = dict()
                 for channel in text_channels:
+                    self.scanning_guilds[guild_id].current_channel += 1
+                    self.logger.debug(self.scanning_guilds[guild_id])
+                    await asyncio.sleep(5) # FIXME remove after adding feature
+
                     async for message in channel.history(limit=200): # TODO remove limit
                         author = message.author.id
                         message_karma = 0

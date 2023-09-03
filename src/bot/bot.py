@@ -9,6 +9,16 @@ from bot.store import KarmaStore
 
 
 class KarmaBot(commands.Bot):
+	"""Discord bot for monitoring karma.
+	
+	Permissions needed:
+	- Read Messages/View Channels
+	- Send Messages
+	- Read Message History
+	- Use External Emojis
+	- Use External Stickers
+	"""
+
 	config: KarmaConfig
 	store: KarmaStore
 
