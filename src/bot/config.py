@@ -20,6 +20,7 @@ class ConfigProvider:
 
     def get_config(self) -> KarmaConfig:
         """Get config"""
+        ...
 
 
 def config_from_dict(obj: dict) -> KarmaConfig:

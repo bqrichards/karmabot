@@ -1,10 +1,10 @@
 import logging
 from typing import Optional
-from discord.ext import commands
-from bot.store import KarmaStore
+
+from bot.bot import KarmaBotContext
 
 
-async def karma_command(ctx: commands.Context, store: KarmaStore, target_member: Optional[str]=None) -> None:
+async def karma_command(ctx: KarmaBotContext, target_member: Optional[str]=None) -> None:
     logger = logging.getLogger(__name__)
 
     # Get user id
@@ -27,7 +27,7 @@ async def karma_command(ctx: commands.Context, store: KarmaStore, target_member:
 
     logger.debug(f'Fetching karma for user {target_user_id}')
     
-    karma = await store.get_karma_of_user(guild_id, target_user_id)
+    karma = await ctx.bot.store.get_karma_of_user(guild_id, target_user_id)
     logger.debug(f'Fetched karma: {karma}')
 
     await ctx.reply(f'{karma}')

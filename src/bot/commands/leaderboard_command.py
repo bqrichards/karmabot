@@ -1,8 +1,7 @@
 import logging
 import discord
-from discord.ext import commands
 
-from bot.store import KarmaStore
+from bot.bot import KarmaBotContext
 
 def get_display_name(member: discord.Member | None) -> str:
     if member is None:
@@ -11,14 +10,14 @@ def get_display_name(member: discord.Member | None) -> str:
     return member.display_name
 
 
-async def leaderboard_command(ctx: commands.Context, store: KarmaStore, member_count: int):
+async def leaderboard_command(ctx: KarmaBotContext, member_count: int):
     logger = logging.getLogger('leaderboard_command')
     guild = ctx.guild
     if guild is None:
         logger.error('Guild is None')
         return
     
-    top_users = await store.get_top_users(guild.id, member_count)
+    top_users = await ctx.bot.store.get_top_users(guild.id, member_count)
 
     def get_user_name(user_id: int):
         return get_display_name(guild.get_member(user_id))

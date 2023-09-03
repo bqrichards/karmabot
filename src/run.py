@@ -13,13 +13,13 @@ load_dotenv()
 
 TOKEN = os.getenv('KARMABOT_TOKEN')
 if not TOKEN:
-	raise ValueError('KARMABOT_TOKEN env variable missing')
+    raise ValueError('KARMABOT_TOKEN env variable missing')
 
 def setup_logger():
-	log_level = os.environ.get('LOG_LEVEL', 'INFO')
-	logging.basicConfig()
-	logging.getLogger().setLevel(log_level)
-	print(f'Setting log level to {log_level}')
+    log_level = os.environ.get('LOG_LEVEL', 'INFO')
+    logging.basicConfig()
+    logging.getLogger().setLevel(log_level)
+    print(f'Setting log level to {log_level}')
 
 setup_logger()
 
@@ -33,7 +33,7 @@ if __name__ == '__main__':
 
     # store: KarmaStore = KarmaMemoryStore()
     store: KarmaStore = KarmaSqliteStore(filepath='data/karma.db')
-
+    
     bot = KarmaBot(intents=intents, config=config, store=store)
 
     bot.run(TOKEN)
