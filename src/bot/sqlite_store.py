@@ -76,6 +76,12 @@ class KarmaSqliteStore(KarmaStore):
 
         return top_users
 
+    async def set_guild_karma(self, guild_id: int, karma: dict[int, int]) -> None:
+        cur = self.connection.cursor()
+        for user_id, karma_amount in karma.items():
+            cur.execute('INSERT INTO karma (guild_id, user_id, karma) VALUES (?, ?, ?) ON CONFLICT (guild_id, user_id) DO UPDATE SET guild_id=excluded.guild_id, user_id=excluded.user_id, karma=excluded.karma', (guild_id, user_id, karma_amount,))
+        self.connection.commit()
+        cur.close()
 
     def __str__(self) -> str:
         return __class__.__name__

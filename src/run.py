@@ -6,7 +6,8 @@ from bot.bot import KarmaBot
 from bot.config import ConfigProvider
 from bot.config_file import ConfigJsonReader
 from bot.store import KarmaStore
-from bot.sqlite_store import KarmaSqliteStore
+from bot.memory_store import KarmaMemoryStore
+# from bot.sqlite_store import KarmaSqliteStore
 
 from dotenv import load_dotenv
 load_dotenv()
@@ -31,8 +32,8 @@ if __name__ == '__main__':
     config_provider: ConfigProvider = ConfigJsonReader(filepath='config.json')
     config = config_provider.get_config()
 
-    # store: KarmaStore = KarmaMemoryStore()
-    store: KarmaStore = KarmaSqliteStore(filepath='data/karma.db')
+    store: KarmaStore = KarmaMemoryStore()
+    # store: KarmaStore = KarmaSqliteStore(filepath='data/karma.db')
     
     bot = KarmaBot(intents=intents, config=config, store=store)
 

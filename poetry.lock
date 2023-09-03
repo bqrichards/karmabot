@@ -337,6 +337,20 @@ files = [
 ]
 
 [[package]]
+name = "janus"
+version = "1.0.0"
+description = "Mixed sync-async queue to interoperate between asyncio tasks and classic threads"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "janus-1.0.0-py3-none-any.whl", hash = "sha256:2596ea5482711c1ee3ef2df6c290aaf370a13c55a007826e8f7c32d696d1d00a"},
+    {file = "janus-1.0.0.tar.gz", hash = "sha256:df976f2cdcfb034b147a2d51edfc34ff6bfb12d4e2643d3ad0e10de058cb1612"},
+]
+
+[package.dependencies]
+typing-extensions = ">=3.7.4.3"
+
+[[package]]
 name = "multidict"
 version = "6.0.4"
 description = "multidict implementation"
@@ -434,6 +448,17 @@ files = [
 cli = ["click (>=5.0)"]
 
 [[package]]
+name = "typing-extensions"
+version = "4.7.1"
+description = "Backported and Experimental Type Hints for Python 3.7+"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "typing_extensions-4.7.1-py3-none-any.whl", hash = "sha256:440d5dd3af93b060174bf433bccd69b0babc3b15b1a8dca43789fd7f61514b36"},
+    {file = "typing_extensions-4.7.1.tar.gz", hash = "sha256:b75ddc264f0ba5615db7ba217daeb99701ad295353c45f9e95963337ceeeffb2"},
+]
+
+[[package]]
 name = "yarl"
 version = "1.9.2"
 description = "Yet another URL library"
@@ -523,4 +548,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "a0b97c23334017fdca51e3f1f52c25950457253a7388f4c9a6cbb0eb8858b356"
+content-hash = "f75ef0d8ae099fcd25ffc52c6bb02b1a8b5761c0fec5f6adfa1596d93309bda1"

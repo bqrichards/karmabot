@@ -1,5 +1,5 @@
 import logging
-from store import KarmaStore
+from bot.store import KarmaStore
 
 
 class KarmaMemoryStore(KarmaStore):
@@ -55,6 +55,9 @@ class KarmaMemoryStore(KarmaStore):
         top_users = top_users[:number_of_users]
 
         return top_users
+
+    async def set_guild_karma(self, guild_id: int, karma: dict[int, int]) -> None:
+        self.karma_map[guild_id] = karma
 
     def __str__(self) -> str:
         return 'KarmaMemoryStore'
