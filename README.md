@@ -36,6 +36,7 @@ Finally, run the main bot script with Poetry.
 | ----------------------------- | ---------------------------------------------------------------------- |
 | `?karma [user]`               | Replies with the karma of the user. If no user specified, uses sender. |
 | `?leaderboard [member_count]` | Replies with the users that have the most karma in the guild.          |
+| `?scan`                       | Scan the guild for karma in past messages.                             |
 
 ## Config
 
@@ -60,7 +61,7 @@ Environment variables are loaded from a `.env` file.
 
 - [x] Karma command
 - [x] Persistant karma store (SQLite)
-- [ ] Scan previous messages for karma
+- [x] Scan previous messages for karma
 
 ## License
 

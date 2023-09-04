@@ -1,13 +1,24 @@
-import logging
 import os
+import logging
 import discord
 from typing import Optional
 from discord.ext import commands
+
 from bot.config import KarmaConfig
 from bot.store import KarmaStore
 
 
 class KarmaBot(commands.Bot):
+	"""Discord bot for monitoring karma.
+	
+	Permissions needed:
+	- Read Messages/View Channels
+	- Send Messages
+	- Read Message History
+	- Use External Emojis
+	- Use External Stickers
+	"""
+
 	config: KarmaConfig
 	store: KarmaStore
 
@@ -24,6 +35,19 @@ class KarmaBot(commands.Bot):
 
 		self.logger = logging.getLogger(__class__.__name__)
 		self.logger.info('Creating bot with config: ' + str(self.config) + ", store: " + str(self.store) + ', logger: ' + str(self.logger))
+
+		@self.event
+		async def on_ready():
+			self.logger.info(f'Logged in as {self.user}')
+
+	async def setup_hook(self) -> None:
+		self.logger.info('Opening karma store')
+		await self.store.open()
+		self.logger.info('Loading cogs')
+		for filename in os.listdir('./src/bot/cogs'):
+			if filename.endswith('.py'):
+				await self.load_extension(f'bot.cogs.{filename[:-3]}')
+		return await super().setup_hook()
 
 	async def get_message_sender_id(self, payload: discord.RawReactionActionEvent) -> Optional[int]:
 		"""Get the sender of a message that was the subject of a RawReactionActionEvent"""
@@ -52,22 +76,12 @@ class KarmaBot(commands.Bot):
 		"""Whether this emoji is an downvote"""
 		return emoji in self.downvote_emojis
 	
-	def run(self, token: str, **kwargs) -> None:
-		@self.event
-		async def on_ready():
-			self.logger.info(f'Logged in as {self.user}')
-			self.logger.info('------')
-			self.logger.info('Opening karma store')
-			await self.store.open()
-			self.logger.info('Loading cogs')
-			for filename in os.listdir('./src/bot/cogs'):
-				if filename.endswith('.py'):
-					await self.load_extension(f'bot.cogs.{filename[:-3]}')
-
-		return super().run(token, **kwargs)
-	
 	async def close(self) -> None:
 		self.logger.info('Closing karma store')
 		await self.store.close()
 		self.logger.info('Logging out')
 		await super().close()
+
+
+KarmaBotContext = commands.Context[KarmaBot]
+"""Type for the commands.Context with `KarmaBot` as the bot"""
