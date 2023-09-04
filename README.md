@@ -61,7 +61,7 @@ Environment variables are loaded from a `.env` file.
 
 - [x] Karma command
 - [x] Persistant karma store (SQLite)
-- [ ] Scan previous messages for karma
+- [x] Scan previous messages for karma
 
 ## License
 
