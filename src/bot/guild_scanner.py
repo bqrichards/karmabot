@@ -101,12 +101,11 @@ class GuildScanner:
         for channel in text_channels:
             self.active_scanning_guilds[guild_id].current_channel += 1
             self.logger.debug(self.active_scanning_guilds[guild_id])
-            await asyncio.sleep(5) # FIXME remove after adding feature
 
-            async for message in channel.history(limit=200): # TODO remove limit
+            async for message in channel.history(limit=10000):
                 author = message.author.id
                 message_karma = 0
-                for reaction in message.reactions:                                
+                for reaction in message.reactions:
                     if reaction.emoji in ctx.bot.config.upvote_emojis:
                         message_karma += 1
                     elif reaction.emoji in ctx.bot.config.downvote_emojis:

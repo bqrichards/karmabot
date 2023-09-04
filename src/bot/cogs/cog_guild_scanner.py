@@ -20,7 +20,6 @@ class KarmaBotGuildScannerCog(commands.Cog):
 
     @commands.command()
     async def scan(self, ctx: KarmaBotContext):
-        # Get user id
         if not ctx.guild:
             self.logger.debug('Guild could not be found on message')
             return
