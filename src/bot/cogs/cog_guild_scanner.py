@@ -28,7 +28,7 @@ class KarmaBotGuildScannerCog(commands.Cog):
         guild_id = ctx.guild.id
 
         try:
-            await self.guild_scanner.add_to_queue(guild_id, ctx)
+            self.guild_scanner.add_to_queue(guild_id, ctx)
             await ctx.send('This guild has be added to the scanning queue')
         except AlreadyScanningError as e:
             await ctx.send(f'This guild is already being scanned. Progress: {e.scanning_record.current_channel}/{e.scanning_record.total_channels} channels')
