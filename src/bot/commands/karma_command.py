@@ -1,4 +1,5 @@
 import logging
+import re
 from typing import Optional
 
 from bot.bot import KarmaBotContext
@@ -16,13 +17,18 @@ async def karma_command(ctx: KarmaBotContext, target_member: Optional[str]=None)
 
     if target_member:
         # Lookup user in guild
-        # FIXME DEBUG:karma_command:Member <@604023481016909835> could not be found in guild - https://github.com/bqrichards/karmabot/issues/7
-        target_user_member = ctx.guild.get_member_named(target_member)
-        if target_user_member is None:
-            await ctx.reply('Could not find a member with that name')
-            logger.debug(f'Member {target_member} could not be found in guild')
-            return
-        target_user_id = target_user_member.id
+        # Check if <@user_id> format
+        mention_format = r'^<@(\d+)>$'
+        mention_matches = re.match(mention_format, target_member)
+        if mention_matches:
+            target_user_id = int(mention_matches.group(1))
+        else:
+            target_user_member = ctx.guild.get_member_named(target_member)
+            if target_user_member is None:
+                await ctx.reply('Could not find a member with that name')
+                logger.debug(f'Member {target_member} could not be found in guild')
+                return
+            target_user_id = target_user_member.id
     else:
         target_user_id = ctx.message.author.id
 
