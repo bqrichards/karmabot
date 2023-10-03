@@ -7,7 +7,8 @@
 - [Commands](#commands)
 - [Config](#config)
 - [Environment](#environment)
-- [Roadmap](#roadmap)
+- [Development](#development)
+  - [Testing](#testing)
 - [License](#license)
 
 ## Summary
@@ -57,11 +58,12 @@ Environment variables are loaded from a `.env` file.
 | `KARMABOT_TOKEN` | Discord bot token | Yes      | None    |
 | `LOG_LEVEL`      | Log level         | No       | INFO    |
 
-## Roadmap
+## Development
 
-- [x] Karma command
-- [x] Persistant karma store (SQLite)
-- [x] Scan previous messages for karma
+### Testing
+To run unit testing, run the command `poetry run pytest`, or using Make, `make test`.
+
+To run unit testing and generate coverage, run the command `poetry run coverage html`, or using Make, `make coverage`.
 
 ## License
 
