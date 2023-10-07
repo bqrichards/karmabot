@@ -1,6 +1,7 @@
 import os
 import logging
 import discord
+import sys
 
 from bot.bot import KarmaBot
 from bot.config import ConfigProvider
@@ -29,8 +30,14 @@ if __name__ == '__main__':
     intents.members = True # needed for get_member_named
     intents.message_content = True # needed for on_message
 
+    logger = logging.getLogger(__name__)
+
     config_provider: ConfigProvider = ConfigJsonReader(filepath='config.json')
-    config = config_provider.get_config()
+    try:
+        config = config_provider.get_config()
+    except Exception as e:
+        logger.error(f'Exiting with error loading config: {e}')
+        sys.exit(1)
 
     # store: KarmaStore = KarmaMemoryStore()
     store: KarmaStore = KarmaSqliteStore(filepath='data/karma.db')
