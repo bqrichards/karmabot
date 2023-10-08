@@ -58,11 +58,38 @@ def test_add_to_queue(guild_scanner):
     with pytest.raises(AlreadyQueuedError):
         guild_scanner.add_to_queue(guild_id, ctx)
 
+def test_add_to_queue_already_scanning(guild_scanner):
+    guild_id = 123
+    ctx = MockKarmaBotContext(MockGuild(guild_id))
+
+    guild_scanner.active_scanning_guilds[guild_id] = ctx
+
+    # Test adding to an already scanning guild
+    with pytest.raises(AlreadyScanningError):
+        guild_scanner.add_to_queue(guild_id, ctx)
+
 @pytest.mark.asyncio
 async def test_scan_guild_empty(guild_scanner):
     assert not guild_scanner.queue
     await guild_scanner.scan_guild()
     assert not guild_scanner.queue
+
+@pytest.mark.asyncio
+async def test_scan_guild_no_guild(guild_scanner):
+    # Mock a context and guild
+    guild_id = 123
+    ctx = MockKarmaBotContext(None)
+    await ctx.bot.store.open()
+    
+    # Add a guild to the queue
+    guild_scanner.add_to_queue(guild_id, ctx)
+    
+    # Test scanning the guild
+    await guild_scanner.scan_guild()
+
+    assert not guild_id in guild_scanner.active_scanning_guilds
+
+    await ctx.bot.store.close()
 
 @pytest.mark.asyncio
 async def test_scan_guild(guild_scanner):
@@ -80,6 +107,13 @@ async def test_scan_guild(guild_scanner):
     assert not guild_scanner.is_scanning_guild(guild_id)
 
     await ctx.bot.store.close()
+
+@pytest.mark.asyncio
+async def test_count_guild_karma_guild_none(guild_scanner):
+    # Mock a context and guild
+    ctx = MockKarmaBotContext(None)
+    guild_karma = await guild_scanner.count_guild_karma(ctx)
+    assert guild_karma == {}
 
 # @pytest.mark.asyncio
 # @patch('builtins.isinstance')
