@@ -1,7 +1,7 @@
 all:
 
 test:
-	poetry run pytest
+	poetry run coverage run -m pytest
 
 coverage:
 	poetry run coverage html --omit="*/test/*"
