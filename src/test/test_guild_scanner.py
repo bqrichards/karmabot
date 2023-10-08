@@ -1,7 +1,6 @@
 import pytest
-from unittest.mock import patch
 from bot.guild_scanner import GuildScanner, AlreadyScanningError, AlreadyQueuedError, GuildScanningRecord
-from test.mocks import MockGuild, MockKarmaBotContext, MockTextChannel
+from test.mocks import create_mock_text_channel, mock_guild, mock_karma_bot_context
 
 
 @pytest.fixture
@@ -30,7 +29,7 @@ def test_is_in_queue(guild_scanner):
 
 def test_add_to_queue(guild_scanner):
     guild_id = 123
-    ctx = MockKarmaBotContext(MockGuild(guild_id))
+    ctx = mock_karma_bot_context(mock_guild(guild_id))
 
     # Test adding to an empty queue
     guild_scanner.add_to_queue(guild_id, ctx)
@@ -42,7 +41,7 @@ def test_add_to_queue(guild_scanner):
 
 def test_add_to_queue_already_scanning(guild_scanner):
     guild_id = 123
-    ctx = MockKarmaBotContext(MockGuild(guild_id))
+    ctx = mock_karma_bot_context(mock_guild(guild_id))
 
     guild_scanner.active_scanning_guilds[guild_id] = ctx
 
@@ -60,7 +59,7 @@ async def test_scan_guild_empty(guild_scanner):
 async def test_scan_guild_no_guild(guild_scanner):
     # Mock a context and guild
     guild_id = 123
-    ctx = MockKarmaBotContext(None)
+    ctx = mock_karma_bot_context(None)
     await ctx.bot.store.open()
     
     # Add a guild to the queue
@@ -77,12 +76,15 @@ async def test_scan_guild_no_guild(guild_scanner):
 async def test_scan_guild(guild_scanner):
     # Mock a context and guild
     guild_id = 123
-    ctx = MockKarmaBotContext(MockGuild(guild_id))
+    ctx = mock_karma_bot_context(mock_guild(guild_id))
     await ctx.bot.store.open()
     
     # Add a guild to the queue
     guild_scanner.add_to_queue(guild_id, ctx)
     
+    # Add some mock text channels to the guild
+    ctx.guild.channels = [create_mock_text_channel(), create_mock_text_channel()]
+
     # Test scanning the guild
     await guild_scanner.scan_guild()
     assert not guild_scanner.is_in_queue(guild_id)
@@ -93,25 +95,24 @@ async def test_scan_guild(guild_scanner):
 @pytest.mark.asyncio
 async def test_count_guild_karma_guild_none(guild_scanner):
     # Mock a context and guild
-    ctx = MockKarmaBotContext(None)
+    ctx = mock_karma_bot_context(None)
     guild_karma = await guild_scanner.count_guild_karma(ctx)
     assert guild_karma == {}
 
-@patch('discord.TextChannel', MockTextChannel)
 @pytest.mark.asyncio
 async def test_count_guild_karma(guild_scanner):
     # Mock a context and guild
     guild_id = 123
-    ctx = MockKarmaBotContext(MockGuild(guild_id))
+    ctx = mock_karma_bot_context(mock_guild(guild_id))
 
     # Add some mock text channels to the guild
-    ctx.guild.channels = [MockTextChannel() for _ in range(3)]
+    ctx.guild.channels = [create_mock_text_channel(), create_mock_text_channel()]
 
     # Test counting guild karma
-    guild_scanner.active_scanning_guilds[guild_id] = GuildScanningRecord(total_channels=3, current_channel=0)
+    guild_scanner.active_scanning_guilds[guild_id] = GuildScanningRecord(total_channels=2, current_channel=0)
     guild_karma = await guild_scanner.count_guild_karma(ctx)
     assert isinstance(guild_karma, dict)
     assert guild_id in guild_scanner.active_scanning_guilds
-    assert guild_scanner.active_scanning_guilds[guild_id].total_channels == 3
-    assert guild_scanner.active_scanning_guilds[guild_id].current_channel == 3
-    assert guild_karma == {456: 3}
+    assert guild_scanner.active_scanning_guilds[guild_id].total_channels == 2
+    assert guild_scanner.active_scanning_guilds[guild_id].current_channel == 2
+    assert guild_karma == {456: 6}

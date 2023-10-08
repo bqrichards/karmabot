@@ -1,63 +1,59 @@
-from discord import TextChannel
+from unittest.mock import Mock
+
+import discord
+from bot.bot import KarmaBot
 from bot.config import KarmaConfig
 from bot.memory_store import KarmaMemoryStore
+from discord.ext import commands
 
-
-class MockKarmaBot():
-    def __init__(self) -> None:
-        self.store = KarmaMemoryStore()
-        self.config = KarmaConfig(upvote_emojis=['👍'], downvote_emojis=['👎'], command_prefix='?')
-
-class MockKarmaBotContext:
-    def __init__(self, guild):
-        self.guild = guild
-        self.bot = MockKarmaBot()
-
-class MockGuild:
-    def __init__(self, id: int):
-        self.id = id
-        self.channels = []
-
-class MockAuthor:
-    def __init__(self, id: int) -> None:
-        self.id = id
-
-class MockReaction:
-    def __init__(self, upvote=False) -> None:
-        if upvote:
-            self.emoji = '👍'
-        else:
-            self.emoji = '👎'
-    
-    def __repr__(self) -> str:
-        return f'MockReaction_emoji={self.emoji}'
-
-class MockMessage:
-    def __init__(self, upvotes=0, downvotes=0) -> None:
-        self.author = MockAuthor(456)
-        self.reactions = [MockReaction(upvote=True) for _ in range(upvotes)]
-        self.reactions.extend(MockReaction(upvote=False) for _ in range(downvotes))
-        print(self.reactions)
-
-class MockTextChannelHistory:
-    def __init__(self, limit = 1000) -> None:
-        self.messages = [MockMessage(upvotes=2), MockMessage(downvotes=1)]
+class AsyncIterator:
+    def __init__(self, seq):
+        self.iter = iter(seq)
 
     def __aiter__(self):
-        self.iter_keys = iter(self.messages)
         return self
 
     async def __anext__(self):
         try:
-            k = next(self.iter_keys)
+            return next(self.iter)
         except StopIteration:
             raise StopAsyncIteration
-        
-        return k
 
-class MockTextChannel(TextChannel):
-    def __init__(self) -> None:
-        ...
+def create_mock_message():
+    mock_author = Mock(name='discord.User', spec=['id'])
+    mock_author.id = 456
 
-    def history(self, limit=10):
-        return MockTextChannelHistory(limit=limit)
+    mock_upvote_reaction = Mock(name='discord.Reaction', spec=['emoji'])
+    mock_upvote_reaction.emoji = '👍'
+
+    mock_downvote_reaction = Mock(name='discord.Reaction', spec=['emoji'])
+    mock_downvote_reaction.emoji = '👎'
+
+    mock_message = Mock(name='discord.Message', spec=['author', 'reactions'])
+    mock_message.author = mock_author
+    mock_message.reactions = [mock_upvote_reaction, mock_upvote_reaction, mock_downvote_reaction]
+
+    return mock_message
+
+def create_mock_text_channel():
+    # Create mock text channels
+    mock_text_channel = Mock(name='discord.TextChannel', spec=discord.TextChannel)
+    mock_text_channel.history.return_value = AsyncIterator(create_mock_message() for _ in range(3))
+    return mock_text_channel
+
+def mock_karma_bot():
+    m = Mock(spec=KarmaBot)
+    m.store = KarmaMemoryStore()
+    m.config = KarmaConfig(upvote_emojis=['👍'], downvote_emojis=['👎'], command_prefix='?')
+    return m
+
+def mock_guild(id: int):
+    m = Mock(spec=discord.Guild)
+    m.id = id
+    return m
+
+def mock_karma_bot_context(guild):
+    m = Mock(spec=commands.Context)
+    m.guild = guild
+    m.bot = mock_karma_bot()
+    return m
