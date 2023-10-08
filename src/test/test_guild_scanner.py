@@ -1,26 +1,8 @@
 import pytest
 from unittest.mock import patch
 from bot.guild_scanner import GuildScanner, AlreadyScanningError, AlreadyQueuedError, GuildScanningRecord
-from bot.memory_store import KarmaMemoryStore
+from test.mocks import MockGuild, MockKarmaBotContext, MockTextChannel
 
-
-class MockKarmaBot():
-    def __init__(self) -> None:
-        self.store = KarmaMemoryStore()
-
-class MockKarmaBotContext:
-    def __init__(self, guild):
-        self.guild = guild
-        self.bot = MockKarmaBot()
-
-class MockGuild:
-    def __init__(self, id):
-        self.id = id
-        self.channels = []
-
-class MockTextChannel:
-    async def history(self):
-        return [x for x in range(100)]
 
 @pytest.fixture
 def guild_scanner():
@@ -115,22 +97,21 @@ async def test_count_guild_karma_guild_none(guild_scanner):
     guild_karma = await guild_scanner.count_guild_karma(ctx)
     assert guild_karma == {}
 
-# @pytest.mark.asyncio
-# @patch('builtins.isinstance')
-# async def test_count_guild_karma(guild_scanner):
-#     # Mock a context and guild
-#     guild_id = 123
-#     ctx = MockKarmaBotContext(MockGuild(guild_id))
+@patch('discord.TextChannel', MockTextChannel)
+@pytest.mark.asyncio
+async def test_count_guild_karma(guild_scanner):
+    # Mock a context and guild
+    guild_id = 123
+    ctx = MockKarmaBotContext(MockGuild(guild_id))
 
-#     # Add some mock text channels to the guild
-#     ctx.guild.channels = [MockTextChannel() for _ in range(3)]
+    # Add some mock text channels to the guild
+    ctx.guild.channels = [MockTextChannel() for _ in range(3)]
 
-#     # Test counting guild karma
-#     guild_scanner.active_scanning_guilds[guild_id] = GuildScanningRecord(total_channels=0, current_channel=0)
-#     with patch('discord.TextChannel') as mtc:
-#         mtc.return_value = MockTextChannel
-#         guild_karma = await guild_scanner.count_guild_karma(ctx)
-#     assert isinstance(guild_karma, dict)
-#     assert guild_id in guild_scanner.active_scanning_guilds
-#     assert guild_scanner.active_scanning_guilds[guild_id].total_channels == 3
-#     assert guild_scanner.active_scanning_guilds[guild_id].current_channel == 0
+    # Test counting guild karma
+    guild_scanner.active_scanning_guilds[guild_id] = GuildScanningRecord(total_channels=3, current_channel=0)
+    guild_karma = await guild_scanner.count_guild_karma(ctx)
+    assert isinstance(guild_karma, dict)
+    assert guild_id in guild_scanner.active_scanning_guilds
+    assert guild_scanner.active_scanning_guilds[guild_id].total_channels == 3
+    assert guild_scanner.active_scanning_guilds[guild_id].current_channel == 3
+    assert guild_karma == {456: 3}
