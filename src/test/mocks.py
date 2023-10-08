@@ -19,10 +19,7 @@ class AsyncIterator:
         except StopIteration:
             raise StopAsyncIteration
 
-def create_mock_message():
-    mock_author = Mock(name='discord.User', spec=['id'])
-    mock_author.id = 456
-
+def create_mock_message(author_id: int):
     mock_upvote_reaction = Mock(name='discord.Reaction', spec=['emoji'])
     mock_upvote_reaction.emoji = '👍'
 
@@ -30,7 +27,7 @@ def create_mock_message():
     mock_downvote_reaction.emoji = '👎'
 
     mock_message = Mock(name='discord.Message', spec=['author', 'reactions'])
-    mock_message.author = mock_author
+    mock_message.author.id = author_id
     mock_message.reactions = [mock_upvote_reaction, mock_upvote_reaction, mock_downvote_reaction]
 
     return mock_message
@@ -38,7 +35,7 @@ def create_mock_message():
 def create_mock_text_channel():
     # Create mock text channels
     mock_text_channel = Mock(name='discord.TextChannel', spec=discord.TextChannel)
-    mock_text_channel.history.return_value = AsyncIterator(create_mock_message() for _ in range(3))
+    mock_text_channel.history.return_value = AsyncIterator(create_mock_message(456) for _ in range(3))
     return mock_text_channel
 
 def mock_karma_bot():

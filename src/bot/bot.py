@@ -47,7 +47,7 @@ class KarmaBot(commands.Bot):
 		for filename in os.listdir('./src/bot/cogs'):
 			if filename.endswith('.py'):
 				await self.load_extension(f'bot.cogs.{filename[:-3]}')
-		return await super().setup_hook()
+		await super().setup_hook()
 
 	async def get_message_sender_id(self, payload: discord.RawReactionActionEvent) -> Optional[int]:
 		"""Get the sender of a message that was the subject of a RawReactionActionEvent"""
@@ -60,7 +60,7 @@ class KarmaBot(commands.Bot):
 			return None
 		
 		channel = guild.get_channel(payload.channel_id)
-		if channel is None or type(channel) != discord.channel.TextChannel:
+		if channel is None or not isinstance(channel, discord.TextChannel):
 			return None
 
 		message = await channel.get_partial_message(payload.message_id).fetch()
