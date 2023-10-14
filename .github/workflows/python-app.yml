@@ -28,7 +28,7 @@ jobs:
       id: poetry-cache
       with:
         path: ~/.cache/pypoetry/virtualenvs
-        key: ${{ runner.os }}-poetry-${{ hashFiles('poetry.lock') }}-${{ hashFiles('.github/workflows/*.yml')
+        key: ${{ runner.os }}-poetry-${{ hashFiles('poetry.lock') }}-${{ hashFiles('.github/workflows/*.yml') }}
     - name: Install dependencies
       if: steps.poetry-cache.outputs.cache-hit != 'true'
       run: |
