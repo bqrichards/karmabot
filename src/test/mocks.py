@@ -3,7 +3,7 @@ from unittest.mock import Mock
 import discord
 from bot.bot import KarmaBot
 from bot.config import KarmaConfig
-from bot.memory_store import KarmaMemoryStore
+from bot.store import KarmaStore
 from discord.ext import commands
 
 class AsyncIterator:
@@ -38,9 +38,13 @@ def create_mock_text_channel():
     mock_text_channel.history.return_value = AsyncIterator(create_mock_message(456) for _ in range(3))
     return mock_text_channel
 
+def mock_karma_store():
+    store = Mock(spec=KarmaStore)
+    return store
+
 def mock_karma_bot():
     m = Mock(spec=KarmaBot)
-    m.store = KarmaMemoryStore()
+    m.store = mock_karma_store()
     m.config = KarmaConfig(upvote_emojis=['👍'], downvote_emojis=['👎'], command_prefix='?')
     return m
 
@@ -51,7 +55,8 @@ def mock_guild(id: int):
     return guild
 
 def mock_karma_bot_context(guild):
-    m = Mock(spec=commands.Context)
-    m.guild = guild
-    m.bot = mock_karma_bot()
-    return m
+    ctx = Mock(spec=commands.Context)
+    ctx.guild = guild
+    ctx.bot = mock_karma_bot()
+    ctx.message = Mock(spec=discord.Message)
+    return ctx

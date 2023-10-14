@@ -24,7 +24,7 @@ async def test_guild_none():
     
     await leaderboard_command(ctx, 0)
 
-    # Fix Assert returned early
+    # Returned early
     assert not ctx.bot.store.get_top_users.called
 
 @pytest.mark.asyncio
