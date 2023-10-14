@@ -20,7 +20,7 @@ class ConfigProvider:
 
     def get_config(self) -> KarmaConfig:
         """Get config"""
-        ...
+        ... # pragma: no cover
 
 
 def config_from_dict(obj: dict) -> KarmaConfig:

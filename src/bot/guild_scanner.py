@@ -1,4 +1,3 @@
-import asyncio
 from collections import OrderedDict
 from dataclasses import dataclass
 import logging
@@ -69,7 +68,6 @@ class GuildScanner:
         guild_id, ctx = self.queue.popitem(last=False)
 
         if ctx.guild is None:
-            self.active_scanning_guilds.pop(guild_id) # Remove from active list
             return
 
         # Mark this guild as being scanned
