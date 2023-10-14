@@ -45,9 +45,10 @@ def mock_karma_bot():
     return m
 
 def mock_guild(id: int):
-    m = Mock(spec=discord.Guild)
-    m.id = id
-    return m
+    guild = Mock(spec=discord.Guild)
+    guild.id = id
+    guild.name = 'Mock Guild'
+    return guild
 
 def mock_karma_bot_context(guild):
     m = Mock(spec=commands.Context)
