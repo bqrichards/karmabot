@@ -1,5 +1,7 @@
 # karmabot <!-- omit in toc -->
 
+[![Python application](https://github.com/bqrichards/karmabot/actions/workflows/python-app.yml/badge.svg)](https://github.com/bqrichards/karmabot/actions/workflows/python-app.yml)
+
 ## Outline <!-- omit in toc -->
 
 - [Summary](#summary)
