@@ -63,7 +63,7 @@ Environment variables are loaded from a `.env` file.
 ### Testing
 To run unit testing, run the command `poetry run pytest`, or using Make, `make test`.
 
-To run unit testing and generate coverage, run the command `poetry run coverage html`, or using Make, `make coverage`.
+To generate coverage, run the command `poetry run coverage html`, or using Make, `make coverage`.
 
 ## License
 
